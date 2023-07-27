@@ -1,11 +1,14 @@
-<!-- eslint-disable vue/multi-word-component-names -->
-// eslint-disable-next-line vue/multi-word-component-names
 <template>
   <div>
     <h2>Registro de usuário!</h2>
     <hr />
     <div class="columns is-centered">
       <div class="column is-half">
+        <div v-if="error != undefined">
+          <div class="notification is-danger">
+            <p>{{ error }}</p>
+          </div>
+        </div>
         <p>Nome:</p>
         <input
           type="text"
@@ -28,7 +31,9 @@
           v-model="password"
         />
         <hr />
-        <button class="button is-success" @click="register()">Cadastrar</button>
+        <button class="button is-success" @click="registerUser()">
+          Cadastrar
+        </button>
       </div>
     </div>
   </div>
@@ -42,22 +47,24 @@ export default {
       name: "",
       password: "",
       email: "",
+      error: undefined,
     };
   },
   methods: {
-    register() {
+    registerUser() {
       axios
-        .post("http://localhost:8080/user", {
+        .post("http://localhost:8686/user", {
           name: this.name,
           password: this.password,
           email: this.email,
         })
         .then((res) => {
           console.log(res);
+          this.$router.push({ name: "home" });
         })
         .catch((err) => {
           var msgErro = err.response.data.err;
-          console.log(msgErro);
+          this.error = msgErro;
         });
     },
   },
