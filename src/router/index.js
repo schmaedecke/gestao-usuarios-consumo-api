@@ -3,6 +3,7 @@ import VueRouter from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import RegisterUser from "../views/RegisterUser.vue";
 import Login from "../views/LoginPage.vue";
+import Users from "../views/Users.vue";
 
 Vue.use(VueRouter);
 
@@ -21,6 +22,18 @@ const routes = [
     path: "/login",
     name: "Login",
     component: Login,
+  },
+  {
+    path: "/admin/users",
+    name: "Users",
+    component: Users,
+    beforeEnter: (to, from, next) => {
+      if (localStorage.getItem("token") != undefined) {
+        next();
+      } else {
+        next("/login");
+      }
+    },
   },
   {
     path: "/about",
