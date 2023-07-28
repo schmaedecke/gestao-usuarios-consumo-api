@@ -4,6 +4,41 @@ import HomeView from "../views/HomeView.vue";
 import RegisterUser from "../views/RegisterUser.vue";
 import Login from "../views/LoginPage.vue";
 import Users from "../views/Users.vue";
+import axios from "axios";
+
+function AdminAuth(to, from, next) {
+  // Get the user's token from localStorage.
+  const token = localStorage.getItem("token");
+
+  // If the token is not present, redirect the user to the login page.
+  if (!token) {
+    return next("/login");
+  }
+
+  // Create a new axios request with the user's token.
+  const request = axios.post(
+    "http://localhost:8686/validate",
+    {},
+    {
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    }
+  );
+
+  // Handle the response from the server.
+  request
+    .then((res) => {
+      // If the response is successful, continue to the next route.
+      console.log(res);
+      next();
+    })
+    .catch((err) => {
+      // If the response is not successful, redirect the user to the login page.
+      console.log(err.response);
+      next("/login");
+    });
+}
 
 Vue.use(VueRouter);
 
@@ -27,13 +62,7 @@ const routes = [
     path: "/admin/users",
     name: "Users",
     component: Users,
-    beforeEnter: (to, from, next) => {
-      if (localStorage.getItem("token") != undefined) {
-        next();
-      } else {
-        next("/login");
-      }
-    },
+    beforeEnter: AdminAuth,
   },
   {
     path: "/about",
