@@ -25,7 +25,7 @@
           v-model="email"
         />
         <hr />
-        <button class="button is-success" @click="update">Editar</button>
+        <button class="button is-success" @click="update()">Editar</button>
       </div>
     </div>
   </div>
