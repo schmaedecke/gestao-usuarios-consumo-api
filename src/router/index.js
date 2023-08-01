@@ -7,45 +7,33 @@ import Users from "../views/Users.vue";
 import axios from "axios";
 
 function AdminAuth(to, from, next) {
-  // Get the user's token from localStorage.
-  const token = localStorage.getItem("token");
-
-  // If the token is not present, redirect the user to the login page.
-  if (!token) {
-    return next("/login");
-  }
-
-  // Create a new axios request with the user's token.
-  const request = axios.post(
-    "http://localhost:8686/validate",
-    {},
-    {
+  if (localStorage.getItem("token") != undefined) {
+    var req = {
       headers: {
-        Authorization: "Bearer " + token,
+        Authorization: "Bearer " + localStorage.getItem("token"),
       },
-    }
-  );
+    };
 
-  // Handle the response from the server.
-  request
-    .then((res) => {
-      // If the response is successful, continue to the next route.
-      console.log(res);
-      next();
-    })
-    .catch((err) => {
-      // If the response is not successful, redirect the user to the login page.
-      console.log(err.response);
-      next("/login");
-    });
+    axios
+      .post("http://localhost:8686/validate", {}, req)
+      .then((res) => {
+        console.log(res);
+        next();
+      })
+      .catch((err) => {
+        console.log(err.response);
+        next("/login");
+      });
+  } else {
+    next("/login");
+  }
 }
-
 Vue.use(VueRouter);
 
 const routes = [
   {
     path: "/",
-    name: "home",
+    name: "Home",
     component: HomeView,
   },
   {
